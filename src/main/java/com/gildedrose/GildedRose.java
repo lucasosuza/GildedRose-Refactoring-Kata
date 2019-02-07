@@ -2,8 +2,8 @@ package com.gildedrose;
 
 class GildedRose {
 
-    public static final int MAXIMUM_QUALITY = 50;
-    public static final int MINIMUM_QUALITY = 0;
+    private static final int MAXIMUM_QUALITY = 50;
+    private static final int MINIMUM_QUALITY = 0;
 
     Item[] items;
 
@@ -14,69 +14,50 @@ class GildedRose {
     public void updateQuality() {
         for (int i = 0; i < items.length; i++) {
 
+            switch (items[i].name) {
+                case "Aged Brie":
+                    increaseQuality(i);
+                    break;
 
+                case "Backstage passes to a TAFKAL80ETC concert":
+                    processQualityOfBackstagePasses(i);
+                    break;
 
-            if (isAgedBrie(items[i])) {
-                increaseQualityByOne(i);
-            }
-
-            if (!isAgedBrie(items[i])
-                    && !isBackstagePasses(items[i])) {
-
-                decreaseQuality(i);
-
-            } else {
-
-                increaseQualityByOne(i);
-
-                if (isBackstagePasses(items[i])) {
-                    if (items[i].sellIn < 11) {
-                        increaseQualityByOne(i);
-                    }
-
-                    if (items[i].sellIn < 6) {
-                        increaseQualityByOne(i);
-
-                    }
-                }
-
+                default:
+                    decreaseQuality(i);
+                    break;
             }
 
             descreaseSellIn(i);
-
-            if (items[i].sellIn < 0) {
-
-                if (!isAgedBrie(items[i])) {
-                    if (!isBackstagePasses(items[i])) {
-                        if (canDecreaseQuality(items[i])) {
-                            if (isNotSulfuras(items[i])) {
-                                decreaseQuality(i);
-                            }
-                        }
-                    } else {
-                        items[i].quality = items[i].quality - items[i].quality; //?
-                    }
-                } else {
-                    increaseQualityByOne(i);
-
-                }
-            }
         }
     }
 
-    private boolean isBackstagePasses(Item item) {
-        return item.name.equals("Backstage passes to a TAFKAL80ETC concert");
+    private void processQualityOfBackstagePasses(int i) {
+        increaseQuality(i);
+
+
+        if (items[i].sellIn < 11) {
+            increaseQuality(i);
+        }
+
+        if (items[i].sellIn < 6) {
+            increaseQuality(i);
+
+        }
+
+        if (isExpired(items[i])) {
+            items[i].quality = 0;
+        }
     }
 
-    private boolean isAgedBrie(Item item) {
-        return item.name.equals("Aged Brie");
+    private boolean isExpired(Item item) {
+        return item.sellIn <= 0;
     }
 
     private void descreaseSellIn(int itemIndex) {
         if (isNotSulfuras(items[itemIndex])) {
             items[itemIndex].sellIn = items[itemIndex].sellIn - 1;
         }
-
     }
 
     private boolean isNotSulfuras(Item item) {
@@ -91,7 +72,7 @@ class GildedRose {
         return item.quality > MINIMUM_QUALITY && isNotSulfuras(item);
     }
 
-    private void increaseQualityByOne(int itemIndex) {
+    private void increaseQuality(int itemIndex) {
         if (canIncreaseQuality(items[itemIndex])) {
             items[itemIndex].quality = items[itemIndex].quality + 1;
         }
