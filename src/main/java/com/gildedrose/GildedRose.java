@@ -14,37 +14,43 @@ class GildedRose {
     public void updateQuality() {
         for (int i = 0; i < items.length; i++) {
 
-            if (!isAgedBrie(items[i])
-                    && !items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
 
-                decreaseQualityByOne(i);
+
+            if (isAgedBrie(items[i])) {
+                increaseQualityByOne(i);
+            }
+
+            if (!isAgedBrie(items[i])
+                    && !isBackstagePasses(items[i])) {
+
+                decreaseQuality(i);
 
             } else {
-                if (items[i].quality < MAXIMUM_QUALITY) {
-                    increaseQualityByOne(i);
 
-                    if (items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (items[i].sellIn < 11) {
-                            increaseQualityByOne(i);
-                        }
+                increaseQualityByOne(i);
 
-                        if (items[i].sellIn < 6) {
-                            increaseQualityByOne(i);
+                if (isBackstagePasses(items[i])) {
+                    if (items[i].sellIn < 11) {
+                        increaseQualityByOne(i);
+                    }
 
-                        }
+                    if (items[i].sellIn < 6) {
+                        increaseQualityByOne(i);
+
                     }
                 }
+
             }
 
             descreaseSellIn(i);
 
             if (items[i].sellIn < 0) {
 
-                if (!items[i].name.equals("Aged Brie")) {
-                    if (!items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+                if (!isAgedBrie(items[i])) {
+                    if (!isBackstagePasses(items[i])) {
                         if (canDecreaseQuality(items[i])) {
                             if (isNotSulfuras(items[i])) {
-                                decreaseQualityByOne(i);
+                                decreaseQuality(i);
                             }
                         }
                     } else {
@@ -56,6 +62,10 @@ class GildedRose {
                 }
             }
         }
+    }
+
+    private boolean isBackstagePasses(Item item) {
+        return item.name.equals("Backstage passes to a TAFKAL80ETC concert");
     }
 
     private boolean isAgedBrie(Item item) {
@@ -87,7 +97,7 @@ class GildedRose {
         }
     }
 
-    private void decreaseQualityByOne(int itemIndex) {
+    private void decreaseQuality(int itemIndex) {
         if (canDecreaseQuality(items[itemIndex])) {
             items[itemIndex].quality = items[itemIndex].quality - 1;
         }
