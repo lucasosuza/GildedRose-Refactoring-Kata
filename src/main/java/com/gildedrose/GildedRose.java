@@ -23,8 +23,12 @@ class GildedRose {
                     processQualityOfBackstagePasses(i);
                     break;
 
+                case "Conjured Mana Cake":
+                    decreaseQuality(i, 2);
+
+                    break;
                 default:
-                    decreaseQuality(i);
+                    decreaseQualityByOne(i);
                     break;
             }
 
@@ -72,15 +76,19 @@ class GildedRose {
         return item.quality > MINIMUM_QUALITY && isNotSulfuras(item);
     }
 
+    private void decreaseQualityByOne(int itemIndex) {
+        decreaseQuality(itemIndex, 1);
+    }
+
     private void increaseQuality(int itemIndex) {
         if (canIncreaseQuality(items[itemIndex])) {
             items[itemIndex].quality = items[itemIndex].quality + 1;
         }
     }
 
-    private void decreaseQuality(int itemIndex) {
+    private void decreaseQuality(int itemIndex, int value) {
         if (canDecreaseQuality(items[itemIndex])) {
-            items[itemIndex].quality = items[itemIndex].quality - 1;
+            items[itemIndex].quality = items[itemIndex].quality - value;
         }
     }
 }
